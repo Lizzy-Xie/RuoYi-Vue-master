@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.library.mapper.TbBookMapper">
+
+    <!-- 结果集映射，和原有一致 -->
+    <resultMap type="com.ruoyi.library.domain.TbBook" id="TbBookResult">
+        <result property="bkID" column="bkID"/>
+        <result property="bkCode" column="bkCode"/>
+        <result property="bkName" column="bkName"/>
+        <result property="bkAuthor" column="bkAuthor"/>
+        <result property="bkPress" column="bkPress"/>
+        <result property="bkDatePress" column="bkDatePress"/>
+        <result property="bkISBN" column="bkISBN"/>
+        <result property="bkCatalog" column="bkCatalog"/>
+        <result property="bkLanguage" column="bkLanguage"/>
+        <result property="bkPages" column="bkPages"/>
+        <result property="bkPrice" column="bkPrice"/>
+        <result property="bkDateIn" column="bkDateIn"/>
+        <result property="bkBrief" column="bkBrief"/>
+        <result property="bkCover" column="bkCover"/>
+        <result property="bkStatus" column="bkStatus"/>
+    </resultMap>
+
+    <!-- 基础查询SQL片段，复用 -->
+    <sql id="selectTbBookVo">
+        select bkID, bkCode, bkName, bkAuthor, bkPress, bkDatePress, bkISBN, bkCatalog,
+        bkLanguage, bkPages, bkPrice, bkDateIn, bkBrief, bkCover, bkStatus
+        from tb_book
+    </sql>
+
+    <!-- 1. 原有方法：查询图书列表（已包含状态筛选，无需重复定义） -->
+    <select id="selectTbBookList" parameterType="com.ruoyi.library.domain.TbBook" resultMap="TbBookResult">
+        <include refid="selectTbBookVo"/>
+        <where>
+            <if test="bkCode != null and bkCode != ''"> and bkCode = #{bkCode}</if>
+            <if test="bkName != null and bkName != ''"> and bkName like concat('%', #{bkName}, '%')</if>
+            <if test="bkAuthor != null and bkAuthor != ''"> and bkAuthor = #{bkAuthor}</if>
+            <if test="bkPress != null and bkPress != ''"> and bkPress = #{bkPress}</if>
+            <if test="bkDatePress != null"> and bkDatePress = #{bkDatePress}</if>
+            <if test="bkISBN != null and bkISBN != ''"> and bkISBN = #{bkISBN}</if>
+            <if test="bkCatalog != null and bkCatalog != ''"> and bkCatalog = #{bkCatalog}</if>
+            <if test="bkLanguage != null"> and bkLanguage = #{bkLanguage}</if>
+            <if test="bkPages != null"> and bkPages = #{bkPages}</if>
+            <if test="bkPrice != null"> and bkPrice = #{bkPrice}</if>
+            <if test="bkDateIn != null"> and bkDateIn = #{bkDateIn}</if>
+            <if test="bkBrief != null and bkBrief != ''"> and bkBrief = #{bkBrief}</if>
+            <if test="bkCover != null and bkCover != ''"> and bkCover = #{bkCover}</if>
+            <if test="bkStatus != null and bkStatus != ''"> and bkStatus = #{bkStatus}</if>
+        </where>
+    </select>
+
+    <!-- 2. 原有方法：根据主键查询图书 -->
+    <select id="selectTbBookByBkID" parameterType="Long" resultMap="TbBookResult">
+        <include refid="selectTbBookVo"/>
+        where bkID = #{bkID}
+    </select>
+
+    <!-- 3. 原有方法：新增图书 -->
+    <insert id="insertTbBook" parameterType="com.ruoyi.library.domain.TbBook" useGeneratedKeys="true" keyProperty="bkID">
+        insert into tb_book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bkCode != null and bkCode != ''">bkCode,</if>
+            <if test="bkName != null and bkName != ''">bkName,</if>
+            <if test="bkAuthor != null">bkAuthor,</if>
+            <if test="bkPress != null">bkPress,</if>
+            <if test="bkDatePress != null">bkDatePress,</if>
+            <if test="bkISBN != null">bkISBN,</if>
+            <if test="bkCatalog != null">bkCatalog,</if>
+            <if test="bkLanguage != null">bkLanguage,</if>
+            <if test="bkPages != null">bkPages,</if>
+            <if test="bkPrice != null">bkPrice,</if>
+            <if test="bkDateIn != null">bkDateIn,</if>
+            <if test="bkBrief != null">bkBrief,</if>
+            <if test="bkCover != null">bkCover,</if>
+            <if test="bkStatus != null">bkStatus,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bkCode != null and bkCode != ''">#{bkCode},</if>
+            <if test="bkName != null and bkName != ''">#{bkName},</if>
+            <if test="bkAuthor != null">#{bkAuthor},</if>
+            <if test="bkPress != null">#{bkPress},</if>
+            <if test="bkDatePress != null">#{bkDatePress},</if>
+            <if test="bkISBN != null">#{bkISBN},</if>
+            <if test="bkCatalog != null">#{bkCatalog},</if>
+            <if test="bkLanguage != null">#{bkLanguage},</if>
+            <if test="bkPages != null">#{bkPages},</if>
+            <if test="bkPrice != null">#{bkPrice},</if>
+            <if test="bkDateIn != null">#{bkDateIn},</if>
+            <if test="bkBrief != null">#{bkBrief},</if>
+            <if test="bkCover != null">#{bkCover},</if>
+            <if test="bkStatus != null">#{bkStatus},</if>
+        </trim>
+    </insert>
+
+    <!-- 4. 原有方法：修改图书 -->
+    <update id="updateTbBook" parameterType="com.ruoyi.library.domain.TbBook">
+        update tb_book
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bkCode != null and bkCode != ''">bkCode = #{bkCode},</if>
+            <if test="bkName != null and bkName != ''">bkName = #{bkName},</if>
+            <if test="bkAuthor != null">bkAuthor = #{bkAuthor},</if>
+            <if test="bkPress != null">bkPress = #{bkPress},</if>
+            <if test="bkDatePress != null">bkDatePress = #{bkDatePress},</if>
+            <if test="bkISBN != null">bkISBN = #{bkISBN},</if>
+            <if test="bkCatalog != null">bkCatalog = #{bkCatalog},</if>
+            <if test="bkLanguage != null">bkLanguage = #{bkLanguage},</if>
+            <if test="bkPages != null">bkPages = #{bkPages},</if>
+            <if test="bkPrice != null">bkPrice = #{bkPrice},</if>
+            <if test="bkDateIn != null">bkDateIn = #{bkDateIn},</if>
+            <if test="bkBrief != null">bkBrief = #{bkBrief},</if>
+            <if test="bkCover != null">bkCover = #{bkCover},</if>
+            <if test="bkStatus != null">bkStatus = #{bkStatus},</if>
+        </trim>
+        where bkID = #{bkID}
+    </update>
+
+    <!-- 5. 原有方法：删除图书（单条） -->
+    <delete id="deleteTbBookByBkID" parameterType="Long">
+        delete from tb_book where bkID = #{bkID}
+    </delete>
+
+    <!-- 6. 原有方法：批量删除图书（修正parameterType） -->
+    <delete id="deleteTbBookByBkIDs" parameterType="Long">
+        delete from tb_book where bkID in
+        <foreach item="bkID" collection="array" open="(" separator="," close=")">
+            #{bkID}
+        </foreach>
+    </delete>
+
+    <!-- ===================== 新增方法（和Mapper接口对应） ===================== -->
+
+    <!-- 7. 新增：根据状态查询图书 -->
+    <select id="selectTbBookByStatus" parameterType="String" resultMap="TbBookResult">
+        <include refid="selectTbBookVo"/>
+        where bkStatus = #{bkStatus}
+    </select>
+
+    <!-- 8. 新增：批量更新图书状态 -->
+    <update id="updateTbBookStatusBatch">
+        update tb_book
+        set bkStatus = #{bkStatus}
+        where bkID in
+        <foreach collection="bkIDs" item="bkID" open="(" separator="," close=")">
+            #{bkID}
+        </foreach>
+    </update>
+
+    <!-- 9. 新增：查询图书分类目录（建议后续替换为数据库表查询，此处保留硬编码示例） -->
+    <select id="selectBookCatalog" resultType="java.util.Map">
+        <!-- 方式1：硬编码（测试用） -->
+        select bkCatalog as catalogCode, bkCatalog as catalogName
+        from tb_book
+        where bkCatalog is not null and bkCatalog != ''
+        group by bkCatalog
+        <!-- 方式2：固定分类（注释掉，按需选择）
+        select 'TP' as catalogCode, '自动化技术、计算机技术' as catalogName union all
+        select 'TP3' as catalogCode, '计算技术、计算机技术' as catalogName union all
+        select 'TP31' as catalogCode, '计算机软件' as catalogName union all
+        select 'TP311' as catalogCode, '程序设计、软件工程' as catalogName union all
+        select 'TP312' as catalogCode, '程序语言、算法语言' as catalogName union all
+        select 'TP311.13' as catalogCode, '数据库理论与系统' as catalogName
+        -->
+    </select>
+
+    <!-- 10. 新增：查询最大书号 -->
+    <select id="selectMaxBkCode" resultType="String">
+        select ifnull(max(bkCode), '') from tb_book <!-- 空值处理，避免返回null -->
+    </select>
+
+</mapper>
